@@ -21,22 +21,14 @@ func UserHandler(srv *http.ServeMux, userService domain.UserService) {
 }
 func (uh *userHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var user domain.User
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println(err)
-		}
-	}()
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	if r.Method == "POST" {
-		w.Header().Set("Content-Type", "application/json")
-		bytedata, _ := json.Marshal(user)
-
-		w.Write(bytedata)
-	} else {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	err = uh.UserService.Login(w, r, user)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "ADA KESALAHAN", http.StatusBadRequest)
 	}
 
 }

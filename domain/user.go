@@ -1,7 +1,11 @@
 package domain
 
+import (
+	"net/http"
+)
+
 type UserService interface {
-	Login()
+	Login(w http.ResponseWriter, r *http.Request, user User) error
 	Register()
 }
 type User struct {
